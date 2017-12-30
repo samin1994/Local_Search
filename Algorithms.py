@@ -6,6 +6,41 @@ sys.setrecursionlimit(100000)
 bestFitness = 0
 
 
+def simulated_annealing(problem, cooling_rate, strategy):
+
+    temperature = 1000
+    while temperature > 1:
+        newState = []
+        for i in range(12):
+            newState.append(randint(1, 2))
+
+        decision_num = randint(0, 1000)
+
+        if problem.fitness(newState) >= problem.fitness(problem.CurrentState):
+            if decision_num < temperature:
+                problem.CurrentState = deepcopy(newState)
+                problem.expanded += 1
+            else:
+                pass
+        elif problem.fitness(newState) < problem.fitness(problem.CurrentState):
+            if decision_num > temperature:
+                problem.CurrentState = deepcopy(newState)
+                problem.expanded += 1
+            else:
+                pass
+
+        for h in range(12):
+            print(problem.CurrentState[h])
+        print('\n')
+
+        if strategy == 'linear':
+            temperature -= cooling_rate
+        elif strategy == 'exponential':
+            temperature = (1-cooling_rate) * temperature
+
+    print("best fitness is : ")
+    print(problem.fitness(problem.CurrentState))
+
 def hill_climbing(problem, random_restart, optType, totalFitness, searchType):
 
     min_res = 100
@@ -20,16 +55,6 @@ def hill_climbing(problem, random_restart, optType, totalFitness, searchType):
             min_res = result
     print("The best fitness is : ")
     print(min_res)
-
-
-
-
-    '''print("the path to maximum is : \n")
-    for k in range(len(problem.path)):
-        for l in range(8):
-            print(problem.path[k][l])
-        print(problem.fitness(problem.path[k]))
-        print('\n')'''
 
 
 def solver(problem, optType, totalFitness, searchType):
